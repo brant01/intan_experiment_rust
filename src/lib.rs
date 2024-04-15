@@ -1,3 +1,3 @@
-mod experiment;
-mod sounds;
-mod tcp;
+pub mod experiments;
+pub mod sounds;
+pub mod tcp;

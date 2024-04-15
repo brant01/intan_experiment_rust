@@ -1,18 +1,18 @@
+// Standard library imports
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use std::error::Error;
 
+// External crate imports
 use cpal::traits::{DeviceTrait, HostTrait};
-use cpal::Host;
-use rodio::Device as RodioDevice;
 
+// Internal module imports
+use crate::experiments::experiment::{AudioSettings, Experiment, RunSettings};
 use crate::sounds::signals::Signal;
-use crate::experiment::experiment::{AudioSettings, Experiment, RunSettings};
 
 impl Experiment {
     pub fn new() -> Experiment {
-        let available_hosts = cpal::available_hosts();
-        let output_path = PathBuf::from("./output/experiment_results");
+ 
+        let output_path = PathBuf::from("./experiment_results");
 
         // Check if the file exists, if not create it
         if !Path::new(&output_path).exists() {
@@ -33,8 +33,15 @@ impl Experiment {
 
     pub fn display_host_options(&self) {
         println!("Available hosts:");
-        for device_option in &self.audio_settings.all_output_devices {
-            println!("{}", device_option);
+        for device_option in &self.audio_settings.all_hosts {
+            println!("{device_option:?}");
+        }
+    }
+
+    pub fn display_device_options(&self) {
+        println!("Available output devices:");
+        for device_option in &self.audio_settings.all_devices {
+            println!("{device_option:?}");
         }
     }
 
@@ -44,7 +51,7 @@ impl Experiment {
             .find(|device| device.name().unwrap() == device_name)
             .expect("Device not found");
 
-        self.audio_settings.output_device = Some(device);
+        self.audio_settings.selected_device = Some(device);
     }
     pub fn add_signal(&mut self, signal: Signal) {
         self.signal_vec.push(signal);
@@ -64,22 +71,28 @@ impl Experiment {
 }
 
 
-
-
 impl AudioSettings {
     pub fn new() -> Self {
-        // Get the default output device with rodio
-        let output_device = rodio::default_output_device();
+        // Get the default host with cpal
+        let default_host = cpal::default_host();
 
-        // Get a list of all output devices with cpal
-        let host = Host::default();
-        let all_output_devices: Vec<String> = host.output_devices().unwrap()
-            .map(|device| device.name().unwrap())
-            .collect();
+        // Retrieve a list of all available hosts
+        let hosts = cpal::available_hosts();
+
+        // Collect names of all available audio hosts into a Vec<String>
+        let all_hosts: Vec<String> = hosts.iter().map(|host_id| host_id.name().to_string()).collect();
+
+        // Get the default output device with cpal
+        let selected_device = default_host.default_output_device();
+
+        // Retrieve a list of all available output devices
+        let all_devices: Vec<String> = default_host.output_devices().unwrap().map(|device| device.name().unwrap()).collect();
 
         Self {
-            output_device,
-            all_output_devices,
+            all_hosts,
+            selected_host: default_host,
+            all_devices,
+            selected_device,
         }
     }
 }

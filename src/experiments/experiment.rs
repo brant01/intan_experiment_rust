@@ -16,6 +16,8 @@ pub struct RunSettings {
 }
 
 pub struct AudioSettings {
-    pub output_device: Option<cpal::Device>,
-    pub all_output_devices: Vec<String>,
+    pub all_hosts: Vec<String>,
+    pub selected_host: cpal::Host,
+    pub all_devices: Vec<String>,
+    pub selected_device: Option<cpal::Device>,
 }

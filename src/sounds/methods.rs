@@ -6,9 +6,8 @@ use hound;
 
 use ndarray::Array1;
 
-use rodio::{Sink, Source};
 
-use crate::experiment::experiment::Experiment; 
+use crate::experiments::experiment::Experiment; 
 use crate::sounds::signals::Signal;
 
 const PI: f64 = std::f64::consts::PI;
@@ -46,9 +45,9 @@ impl Signal {
             description: format!("Signal from wave file: {filename}"),
         }
     }
-
+/* 
     pub fn play(&self, experiment: &Experiment) {
-        let device = experiment.audio_settings.output_device.as_ref().expect("no output device available");
+        let device = experiment.audio_settings.selected_device.as_ref().expect("no output device available");
 
         let sink = Sink::try_new(device).unwrap();
 
@@ -56,7 +55,7 @@ impl Signal {
 
         sink.append(source);
         sink.sleep_until_end();
-    }
+    } */
 }
 
 fn normalize(data: &mut Vec<i16>) -> Vec<f32> {
