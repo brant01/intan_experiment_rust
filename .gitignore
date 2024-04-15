@@ -1,0 +1,21 @@
+# Compiled files
+/target
+
+# These directories contain output and experiment results
+/data
+/output
+/experiment_results
+
+# Ignore .env files as they usually contain sensitive information
+.env
+
+# Ignore backup files from text editors
+*~
+*.swp
+*.swo
+*.bak
+*.save
+
+# Ignore files related to the IDE
+.idea
+.vscode
